@@ -1,0 +1,20 @@
+factory_boy
+
+# Distribution
+pip-tools
+
+# Code style
+mypy
+isort
+flake8
+flake8-bugbear
+black
+
+# PyTest for running the tests.
+pytest
+pytest-django
+
+freezegun
+types-python-dateutil
+types-requests
+types-pytz

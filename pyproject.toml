@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 120
+target_version = ["py39"]
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+known_django = ["django"]
+from_first = false
+include_trailing_comma = true
+length_sort = false
+multi_line_output = 3
+order_by_type = true
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+use_parentheses = true
+line_length = 120
+force_grid_wrap = 0
+
