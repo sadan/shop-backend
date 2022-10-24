@@ -58,6 +58,8 @@ Users can place orders by providing list of products and the quantity. If the pr
 
 # Development
 
+*Note: Before running the application make a copy of **example.env** file and rename it to **.env**.*
+
 Application is built with Python3.9 and you need Docker to run the application locally. Once you have the Docker installed run following command to start the application. It will run the Django server and create a database.
 ```
 make docker/compose/up
