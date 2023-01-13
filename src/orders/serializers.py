@@ -1,4 +1,5 @@
 from django.db import transaction
+
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import InvalidToken
 
@@ -8,9 +9,7 @@ from products.serializers import ProductSerializer
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), write_only=True
-    )
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
     product = ProductSerializer(read_only=True)
     total = serializers.CharField(read_only=True)
 

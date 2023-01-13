@@ -13,6 +13,7 @@ black
 # PyTest for running the tests.
 pytest
 pytest-django
+coverage[toml]
 
 freezegun
 types-python-dateutil
