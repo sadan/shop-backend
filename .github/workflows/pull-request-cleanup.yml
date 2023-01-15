@@ -1,5 +1,4 @@
-name: pull-request
-
+name: pull-request-cleanup
 on:
   pull_request:
     types:
