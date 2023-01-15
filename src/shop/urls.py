@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from orders.urls import urlpatterns as order_urls

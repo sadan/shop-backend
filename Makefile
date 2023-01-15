@@ -1,8 +1,12 @@
 # This Makefile requires the following commands to be available:
-# * python3.9
+# * python3.10
 # * docker
 
-PYTHON_VERSION=python3.9
+PYTHON_VERSION=python3.10
+
+# for local development and testing
+ENVFILE_PATH?=$(CURDIR)/.env
+export ENVFILE_PATH
 
 REQUIREMENTS_BASE:=requirements/base.txt
 REQUIREMENTS_TEST:=requirements/test.txt
@@ -14,6 +18,10 @@ VENV_BASE=venv/.venv_base
 VENV_PROD=venv/.venv_prod
 VENV_TEST=venv/.venv_test
 VENV_DEV=venv/.venv_dev
+
+# Params for k8s deployment
+IMAGE=shop-backend
+REPOSITORY=sadanarshad
 
 .PHONY: pyclean
 pyclean:
@@ -56,6 +64,13 @@ format/isort: $(VENV_TEST)
 .PHONY: format/black
 format/black: $(VENV_TEST)
 	@venv/bin/black --verbose src
+
+.PHONY: test
+test: pyclean lint unittests
+
+.PHONY: unittests
+unittests: $(VENV_TEST)
+	@venv/bin/coverage run -m pytest src/tests
 
 $(REQUIREMENTS_TXT): | $(VENV_BASE)
 	@venv/bin/pip install pip-tools
@@ -117,6 +132,9 @@ run/webserver: $(VENV_PROD)
 run/devserver: $(VENV_DEV)
 	@venv/bin/python src/manage.py runserver 0.0.0.0:8000
 
+######################
+# Docker             #
+######################
 docker/compose/migrate:
 	@docker-compose run web venv/bin/python src/manage.py migrate
 

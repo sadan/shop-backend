@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM python:3.9 as base
+FROM python:3.10 as base
 
 ENV IN_DOCKER 1
 
@@ -30,6 +30,10 @@ CMD ["make", "run/webserver"]
 FROM base as test
 
 COPY requirements ./requirements
+
+# for black and isort config
+COPY pyproject.toml .
+COPY setup.cfg .
 
 RUN make venv/.venv_test
 

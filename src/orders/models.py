@@ -12,9 +12,7 @@ class Order(BaseModel):
         on_delete=models.CASCADE,
         help_text="User who placed the order.",
     )
-    code = models.CharField(
-        max_length=12, unique=True, db_index=True, null=True, blank=True
-    )
+    code = models.CharField(max_length=12, unique=True, db_index=True, null=True, blank=True)
 
     class Meta:
         ordering = ("-modified",)
@@ -41,9 +39,7 @@ class Order(BaseModel):
 
 
 class OrderItem(BaseModel):
-    product = models.ForeignKey(
-        Product, related_name="orders", on_delete=models.CASCADE
-    )
+    product = models.ForeignKey(Product, related_name="orders", on_delete=models.CASCADE)
     order = models.ForeignKey("Order", related_name="items", on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1, null=False)
 

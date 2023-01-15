@@ -16,3 +16,13 @@ use_parentheses = true
 line_length = 120
 force_grid_wrap = 0
 
+[tool.coverage.run]
+source = ["src"]
+relative_files = true
+branch = true
+omit = [
+	"src/tests/*",
+	"src/shop/wsgi.py",
+	"src/manage.py",
+	"src/**/migrations/*",
+]

@@ -9,27 +9,38 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import contextlib
+import logging
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = BASE_DIR.parent
 
+ENVFILE_PATH = REPO_DIR / ".env"
+try:
+    load_dotenv(dotenv_path=ENVFILE_PATH)
+except IOError:
+    logger.info("ENVFILE does not exist.")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-32tod50kjq$xm+=cl98a(1)lbq63tqo0uy8vt4e4!640s1+45c"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
-
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -75,21 +86,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "shop.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
-        "NAME": os.environ.get("DATABASE_NAME", "postgres"),
-        "USER": os.environ.get("DATABASE_USER", "postgres"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "postgres"),
-        "TEST": {
-            "NAME": "mytestdatabase",
-        },
-    },
+    "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": os.path.join(REPO_DIR, "db.sqlite3"), "OPTIONS": {}},
 }
+DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
+if DATABASE_ENGINE:
+    for key in ("ENGINE", "NAME", "HOST", "PORT", "USER", "PASSWORD"):
+        key_with_prefix = f"DATABASE_{key}"
+        with contextlib.suppress(KeyError):
+            for db in DATABASES.keys():
+                DATABASES[db][key] = os.environ.get(key_with_prefix, "")
+
+if db_ssl_mode := os.environ.get("DATABASE_OPTIONS_SSLMODE", ""):
+    for db in DATABASES.keys():
+        DATABASES[db]["OPTIONS"]["sslmode"] = db_ssl_mode  # type: ignore
 
 
 # Password validation
@@ -138,9 +150,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
