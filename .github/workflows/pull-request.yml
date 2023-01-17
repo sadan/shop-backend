@@ -28,7 +28,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_GITHUB }}
           role-to-assume: ${{ secrets.AWS_ECR_GITHUB_ROLE_ARN }}
           role-duration-seconds: 1200
-          aws-region: eu-west-1
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -55,7 +55,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_GITHUB }}
           role-to-assume: ${{ secrets.AWS_ECR_GITHUB_ROLE_ARN }}
           role-duration-seconds: 1200
-          aws-region: eu-west-1
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -73,4 +73,39 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: shop-backend
           IMAGE_TAG: pr-${{ github.event.pull_request.number }}-${{ github.run_number }}
-        run: docker run --entrypoint='' --env SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG make unittests
+        run: |
+          docker run --entrypoint='' --env SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG make unittests
+
+  # Currently we delete the image immediately after the checks as we are not deploying it. But in future when the test
+  # image is also deployed we have to change it so the image is deleted only after the pull request is closed.
+  # Run this job always no matter the result of checks job, but wait for it to complete.
+  cleanup:
+    needs: checks
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_FOR_GITHUB }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_GITHUB }}
+          role-to-assume: ${{ secrets.AWS_ECR_GITHUB_ROLE_ARN }}
+          role-duration-seconds: 1200
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Delete test image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: shop-backend
+          IMAGE_TAG: pr-${{ github.event.pull_request.number }}-${{ github.run_number }}
+        run: |
+          aws ecr batch-delete-image \
+            --repository-name shop-backend \
+            --region ${{ vars.AWS_DEFAULT_REGION }} \
+            --image-ids imageTag=$IMAGE_TAG
