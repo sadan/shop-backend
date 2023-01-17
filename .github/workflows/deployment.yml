@@ -20,7 +20,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_GITHUB }}
           role-to-assume: ${{ secrets.AWS_ECR_GITHUB_ROLE_ARN }}
           role-duration-seconds: 1200
-          aws-region: eu-west-1
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -37,7 +37,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: shop-backend
-          IMAGE_TAG: steps.tag_version.outputs.new_tag
+          IMAGE_TAG: ${{ steps.tag_version.outputs.new_tag }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG . --target=prod
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
