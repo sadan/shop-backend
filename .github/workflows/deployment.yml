@@ -1,15 +1,16 @@
 # This workflow is used to build and deploy the new version of application.
 
-name: Deploy Django application to Amazon ECS
+name: Deployment
 on:
   push:
-    branches: [ $default-branch ]
+    branches:
+      - "main"
 
 env:
   AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   ECR_REPOSITORY: shop-backend
-  ECS_SERVICE: MY_ECS_SERVICE
-  ECS_CLUSTER: ShopBackendCluster
+  ECS_SERVICE: ${{ vars.ECS_SERVICE }}
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: etc/ecs-task-definition.json
   CONTAINER_NAME: app
 
