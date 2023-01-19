@@ -1,38 +1,49 @@
 {
-    "family": "web",
-    "networkMode": "awsvpc",
-    "containerDefinitions": [
+  "family": "web",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "registry/shop-backend:latest",
+      "portMappings": [
         {
-            "name": "app",
-            "image": "registry/shop-backend:latest",
-            "portMappings": [
-                {
-                    "containerPort": 8000,
-                    "hostPort": 8000,
-                    "protocol": "tcp"
-                }
-            ],
-            "essential": true,
-            "environment": [
-                {
-                    "name": "DJANGO_SETTINGS_MODULE",
-                    "value": "shop.settings"
-                }
-            ],
-            "healthCheck": {
-                "command": [
-                    "CMD-SHELL", "curl -f http://localhost/api/health/ || exit 1"
-                ],
-                "interval": 10,
-                "timeout": 5,
-                "retries": 3,
-                "startPeriod": 5
-            }
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
         }
-    ],
-    "requiresCompatibilities": [
-        "FARGATE"
-    ],
-    "cpu": "256",
-    "memory": "512"
+      ],
+      "essential": true,
+      "environment": [
+        {
+          "name": "DJANGO_SETTINGS_MODULE",
+          "value": "shop.settings"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost/api/health/ || exit 1"
+        ],
+        "interval": 10,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 5
+      },
+      "logConfiguration": {
+        "logDriver": "awslog",
+        "options": {
+          "awslogs-region": "eu-west-1",
+          "awslogs-create-group": "true",
+          "awslogs-stream-prefix": "web"
+        }
+      }
+    }
+  ],
+  "executionRoleArn": "arn:aws:iam::317957948779:role/ShopBackendTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::317957948779:role/ShopBackendEcsTaskRole",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512"
 }
