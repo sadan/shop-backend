@@ -1,5 +1,5 @@
 {
-  "family": "web",
+  "family": "app",
   "networkMode": "awsvpc",
   "containerDefinitions": [
     {
