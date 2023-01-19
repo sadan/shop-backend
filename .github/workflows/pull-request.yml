@@ -2,7 +2,7 @@
 # check lint and unittest but later one we'll also deploy this image in a preview or testing environment to run
 # integration tests or do manual tests as well.
 
-name: pull-request
+name: Pull request
 on:
   pull_request:
     types:
