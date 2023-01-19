@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: '0'
+          fetch-depth: 10
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -38,10 +38,10 @@ jobs:
 
       - name: Bump version and push tag
         id: tag_version
-        uses: anothrNick/github-tag-action@1.55.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          WITH_V: false
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          tag_prefix: ''
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
@@ -80,9 +80,9 @@ jobs:
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
 
-#      - name: Create a GitHub release
-#        uses: ncipollo/release-action@v1
-#        with:
-#          tag: ${{ steps.tag_version.outputs.new_tag }}
-#          name: Release ${{ steps.tag_version.outputs.new_tag }}
-#          body: ${{ steps.tag_version.outputs.changelog }}
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
