@@ -12,7 +12,7 @@ env:
   ECS_SERVICE: ${{ vars.ECS_SERVICE }}
   ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: etc/ecs-task-definition.json
-  CONTAINER_NAME: app
+  CONTAINER_NAME: web
 
 jobs:
   deployment:

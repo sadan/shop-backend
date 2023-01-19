@@ -1,9 +1,9 @@
 {
-  "family": "app",
+  "family": "web",
   "networkMode": "awsvpc",
   "containerDefinitions": [
     {
-      "name": "app",
+      "name": "web",
       "image": "registry/shop-backend:latest",
       "portMappings": [
         {
