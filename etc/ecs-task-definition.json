@@ -1,0 +1,58 @@
+{
+    "family": "",
+    "containerDefinitions": [
+        {
+            "name": "app",
+            "image": "registry/shop-backend:latest",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 8000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "DJANGO_SETTINGS_MODULE",
+                    "value": "shop.settings"
+                }
+            ],
+            "environmentFiles": [
+                {
+                    "value": "",
+                    "type": "s3"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "",
+                    "valueFrom": ""
+                }
+            ],
+            "dependsOn": [
+                {
+                    "containerName": "",
+                    "condition": "START"
+                }
+            ],
+            "healthCheck": {
+                "command": [
+                    ""
+                ],
+                "interval": 0,
+                "timeout": 0,
+                "retries": 0,
+                "startPeriod": 0
+            }
+        }
+    ],
+    "cpu": "",
+    "memory": "",
+    "tags": [
+        {
+            "key": "",
+            "value": ""
+        }
+    ]
+}

@@ -1,13 +1,20 @@
 # This workflow is used to build and deploy the new version of application.
 
-name: deployment
+name: Deploy Django application to Amazon ECS
 on:
   push:
-    branches:
-      - main
+    branches: [ $default-branch ]
+
+env:
+  AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  ECR_REPOSITORY: shop-backend
+  ECS_SERVICE: MY_ECS_SERVICE
+  ECS_CLUSTER: ShopBackendCluster
+  ECS_TASK_DEFINITION: etc/ecs-task-definition.json
+  CONTAINER_NAME: app
 
 jobs:
-  build:
+  deployment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,6 +49,33 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest . --target=prod
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Update ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-image.outputs.image }}
+          environment-variables: |
+            SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+            DATABASE_ENGINE: ${{ vars.DJANGO_DATABASE_ENGINE }}
+            DATABASE_NAME: ${{ vars.DJANGO_DATABASE_NAME }}
+            DATABASE_HOST: ${{ vars.DJANGO_DATABASE_HOST }}
+            DATABASE_PORT: ${{ vars.DJANGO_DATABASE_PORT }}
+            DATABASE_USER: ${{ secrets.DJANGO_DATABASE_USER }}
+            DATABASE_PASSWORD: ${{ secrets.DJANGO_DATABASE_PASSWORD }}
+            DATABASE_OPTIONS_SSLMODE: ${{ vars.DJANGO_DATABASE_OPTIONS_SSLMODE }}
+            
+
+      - name: Deploy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@de0132cf8cdedb79975c6d42b77eb7ea193cf28e
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
