@@ -36,7 +36,7 @@ except IOError:
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = os.environ.get("DEBUG", False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -91,8 +91,7 @@ WSGI_APPLICATION = "shop.wsgi.application"
 DATABASES = {
     "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": os.path.join(REPO_DIR, "db.sqlite3"), "OPTIONS": {}},
 }
-DATABASE_ENGINE = os.environ.get("DATABASE_ENGINE")
-if DATABASE_ENGINE:
+if "DATABASE_ENGINE" in os.environ:
     for key in ("ENGINE", "NAME", "HOST", "PORT", "USER", "PASSWORD"):
         key_with_prefix = f"DATABASE_{key}"
         with contextlib.suppress(KeyError):

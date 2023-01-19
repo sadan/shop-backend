@@ -8,6 +8,7 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+COPY etc/ etc/
 COPY requirements.txt .
 COPY Makefile .
 
