@@ -18,11 +18,14 @@ from django.urls import include, path
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from base.views import HealthAPIView
 from orders.urls import urlpatterns as order_urls
 from products.urls import urlpatterns as product_urls
 
 api_patterns = (
     [
+        # Health
+        path("health/", HealthAPIView.as_view(), name="health"),
         # Token paths
         path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
         path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
