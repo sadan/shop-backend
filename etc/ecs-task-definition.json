@@ -1,5 +1,5 @@
 {
-    "family": "",
+    "family": "web",
     "containerDefinitions": [
         {
             "name": "app",
@@ -18,41 +18,17 @@
                     "value": "shop.settings"
                 }
             ],
-            "environmentFiles": [
-                {
-                    "value": "",
-                    "type": "s3"
-                }
-            ],
-            "secrets": [
-                {
-                    "name": "",
-                    "valueFrom": ""
-                }
-            ],
-            "dependsOn": [
-                {
-                    "containerName": "",
-                    "condition": "START"
-                }
-            ],
             "healthCheck": {
                 "command": [
-                    ""
+                    "CMD-SHELL", "curl -f http://localhost/api/health/ || exit 1"
                 ],
-                "interval": 0,
-                "timeout": 0,
-                "retries": 0,
-                "startPeriod": 0
+                "interval": 10,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 5
             }
         }
     ],
-    "cpu": "",
-    "memory": "",
-    "tags": [
-        {
-            "key": "",
-            "value": ""
-        }
-    ]
+    "cpu": "256",
+    "memory": "512"
 }
