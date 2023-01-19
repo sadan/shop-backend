@@ -61,14 +61,14 @@ jobs:
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-image.outputs.image }}
           environment-variables: |
-            SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-            DATABASE_ENGINE: ${{ vars.DJANGO_DATABASE_ENGINE }}
-            DATABASE_NAME: ${{ vars.DJANGO_DATABASE_NAME }}
-            DATABASE_HOST: ${{ vars.DJANGO_DATABASE_HOST }}
-            DATABASE_PORT: ${{ vars.DJANGO_DATABASE_PORT }}
-            DATABASE_USER: ${{ secrets.DJANGO_DATABASE_USER }}
-            DATABASE_PASSWORD: ${{ secrets.DJANGO_DATABASE_PASSWORD }}
-            DATABASE_OPTIONS_SSLMODE: ${{ vars.DJANGO_DATABASE_OPTIONS_SSLMODE }}
+            SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
+            DATABASE_ENGINE=${{ vars.DJANGO_DATABASE_ENGINE }}
+            DATABASE_NAME=${{ vars.DJANGO_DATABASE_NAME }}
+            DATABASE_HOST=${{ vars.DJANGO_DATABASE_HOST }}
+            DATABASE_PORT=${{ vars.DJANGO_DATABASE_PORT }}
+            DATABASE_USER=${{ secrets.DJANGO_DATABASE_USER }}
+            DATABASE_PASSWORD=${{ secrets.DJANGO_DATABASE_PASSWORD }}
+            DATABASE_OPTIONS_SSLMODE=${{ vars.DJANGO_DATABASE_OPTIONS_SSLMODE }}
             
 
       - name: Deploy
