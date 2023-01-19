@@ -58,7 +58,7 @@ jobs:
 
       - name: Update ECS task definition
         id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1.1
+        uses: aws-actions/amazon-ecs-render-task-definition@f15ed65f9cc12455139db0f8e8ff6f6aaad6dfda
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
@@ -74,7 +74,7 @@ jobs:
             DATABASE_OPTIONS_SSLMODE=${{ vars.DJANGO_DATABASE_OPTIONS_SSLMODE }}
 
       - name: Deploy
-        uses: aws-actions/amazon-ecs-deploy-task-definition@1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
