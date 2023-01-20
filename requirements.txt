@@ -17,6 +17,8 @@ djangorestframework==3.14.0
     #   djangorestframework-simplejwt
 djangorestframework-simplejwt==5.2.2
     # via -r requirements/base.txt
+mysqlclient==2.1.1
+    # via -r requirements/base.txt
 psycopg2-binary==2.9.5
     # via -r requirements/base.txt
 pyjwt==2.6.0

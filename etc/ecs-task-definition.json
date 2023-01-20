@@ -28,15 +28,6 @@
         "timeout": 5,
         "retries": 3,
         "startPeriod": 5
-      },
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "ecs/shopbackend/acc/",
-          "awslogs-region": "eu-west-1",
-          "awslogs-create-group": "true",
-          "awslogs-stream-prefix": "web"
-        }
       }
     }
   ],
