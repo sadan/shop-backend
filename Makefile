@@ -87,6 +87,10 @@ REVISION: BRANCH?=$(shell git branch | grep '*' | awk '{print $$2}')
 REVISION:
 	@echo "$(BRANCH) $(VERSION)" > REVISION
 
+.PHONY: collectstatic
+collectstatic:
+	@venv/bin/python src/manage.py collectstatic --noinput
+
 ################################################
 # Setting up of different kinds of virtualenvs #
 ################################################

@@ -24,6 +24,7 @@ EXPOSE 8000
 FROM base as prod
 
 RUN make venv/.venv_prod
+RUN make collectstatic
 
 CMD ["make", "run/webserver"]
 
