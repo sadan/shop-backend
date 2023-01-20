@@ -5,6 +5,7 @@
     {
       "name": "web",
       "image": "registry/shop-backend:latest",
+      "user": "1000",
       "portMappings": [
         {
           "containerPort": 8000,
